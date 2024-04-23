@@ -3,49 +3,52 @@ import { Text, TextInput, StyleSheet, TouchableOpacity, View, ScrollView } from 
 import { VictoryLine, VictoryChart, VictoryTheme, VictoryLegend, VictoryLabel, VictoryScatter, VictoryAxis } from "victory-native";
 
 export default function Main() {
-    const [dia, onChangeDia] = React.useState('');
-    const [mes, onChangeMes] = React.useState('');
-    const [ano, onChangeAno] = React.useState('');
-    const [value, onChangeValue] = React.useState('');
+    const [dia, setChangeDia] = React.useState('');
+    const [mes, setChangeMes] = React.useState('');
+    const [ano, setChangeAno] = React.useState('');
+    const [value, setChangeValue] = React.useState('');
     const [data, setData] = useState([]); //valores
     const [date, setDate] = useState([]); //array para settar as datas do X
 
     const addDataPoint = () => {
-        const newDataPoint = { x: new Date(ano, mes - 1, dia), y: Number(value) }; //formatar a data para o luxon
+        if (dia.trim() !== '' && mes.trim() !== '' && ano.trim() !== '' && mes > 0 && mes <= 12 && dia > 0 && dia <= 31 && ano >= 1970) {
+        const newDataPoint = { x: new Date(ano, mes - 1, dia), y: Number(value) }; //formatar a data mes começa com 0 no Date
         setData([...data, newDataPoint]); //colocar no Y
-        setDate([...date, newDataPoint.x]) //colocar no X
+        setDate([...date, newDataPoint.x]) //colocar no X legenda
+        }
     };
     // console.log(date)
     return (
         <ScrollView>
             <View style={styles.container}>
+                <Text style={styles.texto} >Dia: </Text>
                 <TextInput
                     style={styles.input}
-                    onChangeText={onChangeDia}
+                    onChangeText={setChangeDia}
                     value={dia}
                     placeholder={"Digite o dia, exemplo: 01, 10..."}
                     keyboardType='numeric'
-
                 />
+                <Text style={styles.texto} >Mês: </Text>
                 <TextInput
                     style={styles.input}
-                    onChangeText={onChangeMes}
+                    onChangeText={setChangeMes}
                     value={mes}
                     placeholder={"Digite o mês, exemplo: 07, 12..."}
                     keyboardType='numeric'
-
                 />
+                <Text style={styles.texto} >Ano: </Text>
                 <TextInput
                     style={styles.input}
-                    onChangeText={onChangeAno}
+                    onChangeText={setChangeAno}
                     value={ano}
                     placeholder={"Digite o ano, exemplo: 2022, 2018..."}
                     keyboardType='numeric'
-
                 />
+                <Text style={styles.texto} >Valor: </Text>
                 <TextInput
                     style={styles.input}
-                    onChangeText={onChangeValue}
+                    onChangeText={setChangeValue}
                     value={value}
                     placeholder={"Digite o valor"}
                     keyboardType='numeric'
@@ -84,17 +87,15 @@ export default function Main() {
                         style={{
                             data: { stroke: "#72e073" },
                             parent: { border: "1px solid #ccc" }, //linha
-
                         }}
                         data={data}
-
                     />
                 </VictoryChart>
-                <VictoryLegend x={10} y={25}
-                    orientation="horizontal"
-                    height={150}
+                <VictoryLegend y={10}
+                    orientation="vertical"
+                    height={160}
                     gutter={20}
-                    itemsPerRow={3}
+                    itemsPerRow={2}
                     style={{ border: { stroke: "black" } }}
                     colorScale={["red", "orange", "yellow", "lightgreen", 'lightblue']}
                     data={[
@@ -108,7 +109,7 @@ export default function Main() {
 const styles = StyleSheet.create({
     input: {
         height: 40,
-        margin: 12,
+        margin: 15,
         borderWidth: 1,
         padding: 10,
     },
@@ -122,6 +123,10 @@ const styles = StyleSheet.create({
     },
     container: {
         paddingTop: 40,
-        margin: 'auto'
+        margin: 'auto',
+    },
+    texto:{
+        paddingHorizontal: 25,
+        fontWeight: 'bold'
     }
 });
